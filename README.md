@@ -4,7 +4,7 @@
 
 This project focuses on structuring clinical notes from the MIMIC database using the Mistral API to extract patient and family medical history. By converting unstructured text into a structured format, we aim to identify key risk factors and correlations between pathologies. The analysis follows a structured pipeline: data extraction, visualization of medical trends through word clouds and statistical plots, and modeling to explore associations between conditions.
 
-_🇫🇷 A French version of this document is available in the `README_VF.md` file_
+_🇫🇷 A French version of this document is available in the [README_FR.md](README_FR.md) file._
 
 ## Dataset
 We utilized the **MIMIC-III database**, specifically the `NOTESEVENTS` table, to extract free-text clinical notes. The extracted data was structured using **Mistral API** to obtain:
