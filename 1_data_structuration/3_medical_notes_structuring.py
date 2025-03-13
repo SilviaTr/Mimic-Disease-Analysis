@@ -9,7 +9,7 @@ import pandas as pd
 import requests
 
 API_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  # Replace with your actual API key
-API_KEY = "Ff7Jgh8ccoMhwlVrwa0fKT0sO4In2NSk"
+
 API_URL = "https://api.mistral.ai/v1/chat/completions"
 
 HEADERS = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
