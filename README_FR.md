@@ -4,9 +4,9 @@
 
 Ce projet vise à structurer les notes cliniques issues de la base de données MIMIC en utilisant l'API Mistral pour extraire les antécédents médicaux des patients et de leur famille. En transformant des textes non structurés en un format organisé, nous cherchons à identifier les principaux facteurs de risque et les corrélations entre les pathologies. L'analyse suit un pipeline structuré : extraction des données, visualisation des tendances médicales à l'aide de nuages de mots et de graphiques statistiques, puis modélisation pour explorer les associations entre maladies.
 
-## Jeu de Données
+## Jeux de Données
 
-Nous avons utilisé la **base de données MIMIC-III**, en particulier la table `NOTESEVENTS`, afin d'extraire les notes cliniques en texte libre. Les données extraites ont été structurées à l'aide de **l'API Mistral** pour obtenir :
+Nous avons utilisé la **base de données MIMIC-III**, en particulier la table `NOTESEVENTS`, afin d'extraire les notes cliniques en texte libre. Les données extraites ont été structurées à l'aide de **l'API Mistral AI** pour obtenir :
 - **Pathologie principale** : Diagnostic principal du patient.
 - **Antécédents médicaux personnels** : Pathologies antérieures significatives.
 - **Antécédents médicaux familiaux** : Conditions médicales présentes chez les proches.
@@ -67,7 +67,7 @@ Pour respecter les **réglementations de partage des données MIMIC**, ce dépô
    ```bash
    python 1_data_structuration/2_prepare_medical_notes.py
    ```
-   - Extrait et divise ```NOTEEVENTS.csv``` en deux sous-ensembles, chacun contenant 100 000 lignes.
+   - Ce script extrait et divise ```NOTEEVENTS.csv``` en deux sous-ensembles, chacun contenant 100 000 lignes.
    - Étant donné que l'ensemble de données MIMIC III est très volumineux, la structuration est effectuée uniquement sur une partie de l'ensemble initial.
    - Comme le fichier réel ```NOTEEVENTS.csv``` n'est pas inclus dans ce dépôt en raison des restrictions d'accès aux données MIMIC III, un jeu de données de démonstration a été généré à l'aide de ```1_data_structuration/1_generate_demo_notes.py```. Ce jeu de données reproduit la structure et les caractéristiques des données originales à des fins d'illustration et de test.
 
@@ -79,38 +79,36 @@ Si vous souhaitez exécuter la structuration sur les données réelles de MIMIC 
 - Créez un compte sur PhysioNet : https://physionet.org/login/
   - Complétez le processus de certification requis, y compris la formation sur la confidentialité et la sécurité des données.
 - Demandez l'accès à l'ensemble de données MIMIC-III : https://physionet.org/content/mimiciii/
-- Une fois approuvé, téléchargez les tables nécessaires (NOTEEVENTS.csv, PATIENTS.csv, etc.) et placez-les dans le répertoire approprié (MIMIC_data/).
+- Une fois approuvé, téléchargez les tables nécessaires (`NOTEEVENTS.csv`, `PATIENTS.csv`, etc.) et placez-les dans le répertoire approprié (`MIMIC_data/`), en s'assurant de remplacer les chemins des variables `csv_filename`, `INPUT_CSV` et `OUTPUT_CSV`, par les chemins de ces nouvelles tables.
 
 ##### 1.3. Extraction des Données avec l'API Mistral
   ```bash
   python 1_data_structuration/4_medical_notes_structuring.py
   ```
-  - Traite les notes cliniques en utilisant l'API Mistral avec le multithreading pour optimiser le temps de traitement et gérer efficacement de grands volumes de texte clinique.
-  - Enregistre la sortie structurée sous forme de fichier CSV dans ```1_data_structuration/data/```, qui sera ensuite utilisé pour l'analyse et la modélisation.
+  - Ce script traite les notes cliniques en utilisant l'API Mistral AI avec le multithreading pour optimiser le temps de traitement et gérer efficacement de grands volumes de texte clinique.
+  - Enfin, il enregistre la sortie structurée sous forme de fichier CSV dans ```1_data_structuration/data/```, qui sera ensuite utilisé pour l'analyse et la modélisation.
 
 **⚠️ Important** : Avant d'exécuter le script, vous devez remplacer l'espace réservé à la clé API dans ```1_data_structuration/medical_notes_structuring.py``` par votre propre clé :
   ```python 
   API_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXX"  # Remplacez par votre clé API réelle
   ```
   Vous pouvez générer une clé API gratuite en vous inscrivant sur la plateforme officielle Mistral AI
-   👉 [Plateforme API Mistral](https://mistral.ai/fr/news/la-plateforme)
+   👉 [Plateforme API Mistral](https://mistral.ai/fr/news/la-plateforme) et en souscrivant au plan _Experiment_.
 
 ##### 1.4 Anonymisation des Données
   ```bash
    python 1_data_structuration/4_anonymization.py
  ```
-- Chiffrement de ```SUBJECT_ID``` : Haché avec un algorithme sécurisé et irréversible (ex. SHA-256 tronqué).
-- Garantit qu'aucun lien avec le jeu de données original de MIMIC n'est possible.
-- Cohérence entre les fichiers : Le même ```SUBJECT_ID``` anonymisé est utilisé dans ```PATIENTS_anonymized.csv``` et ```structured_notes_anonymized.csv```, afin d'assurer la correspondance entre les deux tables pour la phase de modélisation.
-
+- L’anonymisation consiste à haché les `SUBJECT_ID` à l’aide d’un algorithme sécurisé et irréversible (ex. `SHA-256` tronqué), garantissant qu’aucun lien avec le jeu de données original de MIMIC ne puisse être établi.
+- Afin de préserver la cohérence entre les fichiers, le même identifiant anonymisé a été utilisé dans `PATIENTS_anonymized.csv` et `structured_notes_anonymized.csv`, permettant de maintenir la correspondance entre les patients et leurs notes cliniques pour la phase de modélisation.
 
 #### 2. Visualisation des Données
    ```bash
    streamlit run 2_visualization/visualization.py
    ```
-   - Lance l'application Streamlit pour la visualisation des données. Également accessible via ce lien 👉 [mimic-disease-exploration.streamlit.app](https://mimic-disease-exploration.streamlit.app/)
-
-   - Affiche des nuages de mots et des graphiques statistiques afin d'identifier les antécédents médicaux personnels et familiaux fréquemment associés à certaines pathologies.
+   - Ce script déploie une application Streamlit dédiée à la visualisation interactive des données accessible directement via ce lien
+   👉 [mimic-disease-exploration.streamlit.app](https://mimic-disease-exploration.streamlit.app/)
+   - Elle permet d’explorer les relations entre pathologies et antécédents médicaux à travers des nuages de mots dynamiques et des     graphiques statistiques. Ces visualisations offrent ainsi une meilleure compréhension des facteurs de risque personnels et familiaux les plus fréquemment associés à certaines maladies.
 
    ![Alt text](Images/app.png)
 
@@ -120,21 +118,23 @@ Si vous souhaitez exécuter la structuration sur les données réelles de MIMIC 
    ```bash
    python 3_modelisation/data_preprocessing.py
    ```
-   - Préparation des données
+   - Cette étape consiste à nettoyer et transformer les données afin de les rendre exploitables pour l’analyse et la modélisation. Les détails de cette transformation sont expliqués dans la section ci-dessous "Modélisation CAD".
+
 
 ##### 3.2 Exploration des Données & Tests d'Hypothèses
+Le script suivant effectue une analyse exploratoire et des tests statistiques :
    ```bash
    python 3_modelisation/data_exploration.py
    ```
-- Effectue une analyse exploratoire des données (EDA).
-- Exécute le test statistique du Chi2 pour valider les hypothèses.
+- Un test de Chi² est exécuté pour évaluer les relations statistiques entre les pathologies et certains antécédents médicaux (diabète, hypertension, historique familial de maladies cardiovasculaires, etc.).
+- Des visualisations sont générées afin d’interpréter plus facilement les tendances observées et valider les hypothèses initiales.
 
 
 ##### 3.3 Prédiction de la Maladie Coronarienne (CAD)
    ```bash
    python 3_modelisation/prediction.py
    ```
-   - Exécute des modèles de machine learning pour valider la corrélation entre les conditions de la maladie coronarienne (CAD) et les antécédents personnels/familiaux tels que le diabète, l'hypertension, etc.
+   - Ce script exécute des modèles de machine learning pour valider la corrélation entre les conditions de la maladie coronarienne (CAD) et les antécédents personnels/familiaux tels que le diabète, l'hypertension, etc.
 
 ## Modélisation CAD  
 
@@ -144,7 +144,7 @@ Si vous souhaitez exécuter la structuration sur les données réelles de MIMIC 
   L'objectif de cette étude était d'analyser l'influence des **antécédents médicaux** sur une maladie spécifique. Pour maximiser les données disponibles, nous nous sommes concentrés sur la **maladie coronarienne (Coronary Artery Disease - CAD)**, la pathologie la plus fréquente dans notre ensemble de données.  
 
 - **Identification des principaux facteurs de risque :**  
-  Grâce à notre **visualisation sous forme de nuage de mots**, nous avons observé que les antécédents médicaux personnels les plus fréquemment associés à la CAD étaient :  
+  A partir de la **visualisation sous forme de nuage de mots**, il a été observé que les antécédents médicaux personnels les plus fréquemment associés à la CAD étaient :  
   - **Hypertension**  
   - **Diabète**  
   - **Hyperlipidémie**  
@@ -158,15 +158,14 @@ Si vous souhaitez exécuter la structuration sur les données réelles de MIMIC 
   Pour évaluer l'impact de ces facteurs de risque sur la CAD, nous avons :  
   - Extrait tous les patients diagnostiqués avec la CAD.  
   - Vérifié s’ils présentaient les **facteurs de risque** identifiés précédemment.  
-  - Appliqué un **encodage one-hot** pour stocker ces conditions sous forme de variables binaires (1 si présente, 0 sinon).  
-    - **Pourquoi l'encodage one-hot ?**  
-      - Il permet de convertir les variables catégoriques (ex. présence d’hypertension) en un format numérique adapté aux modèles d’apprentissage automatique.  
-      - Il évite d’attribuer une relation ordinale là où il n’y en a pas.  
+  - Appliqué un **encodage one-hot** pour stocker ces conditions sous forme de variables binaires (1 si présente, 0 sinon). L'encodage one-hot :
+      - permet de convertir les variables catégoriques (ex. présence d’hypertension) en un format numérique adapté aux modèles d’apprentissage automatique.  
+      - évite d’attribuer une relation ordinale là où il n’y en a pas.  
 
 - **Équilibrage du jeu de données :**  
   - Le jeu de données contenait **12 000 patients atteints de CAD**.  
-  - Pour maintenir un **équilibre des classes (répartition 50-50)**, nous avons sélectionné aléatoirement **12 000 patients non atteints de CAD**.  
-  - Nous avons enrichi le jeu de données en ajoutant **l'âge et le sexe**, car notre analyse a montré que :  
+  - Pour maintenir un **équilibre des classes (répartition 50-50)**, **12 000 patients non atteints de CAD** ont séléctionné aléatoirement.  
+  - Le jeu de données a été enrichi en ajoutant **l'âge et le sexe**, car l'analyse a montré que :  
     - **Les patients âgés de 70 à 90 ans étaient les plus touchés.**  
     - **Les hommes étaient plus souvent diagnostiqués avec la CAD que les femmes.**  
   - Ces variables supplémentaires ont été intégrées en fusionnant le jeu de données avec la **table démographique des patients**.  
@@ -175,8 +174,8 @@ Si vous souhaitez exécuter la structuration sur les données réelles de MIMIC 
 
 Pour mieux comprendre le jeu de données, nous avons réalisé une exploration initiale portant sur :  
 
-- **Structure du jeu de données** : affichage des premières lignes, recherche des valeurs manquantes et résumé des statistiques clés.  
-- **Prévalence des principaux facteurs de risque** : analyse de la distribution de l’**Hypertension, du Diabète, des Antécédents familiaux de CAD, de l’Hyperlipidémie et de l’Infarctus du myocarde**.  
+- La **structure du jeu de données** : affichage des premières lignes, recherche des valeurs manquantes et résumé des statistiques clés.  
+- La **prévalence des principaux facteurs de risque** : analyse de la distribution de l’**Hypertension, du Diabète, des Antécédents familiaux de CAD, de l’Hyperlipidémie et de l’Infarctus du myocarde**.  
 - **Analyse des corrélations** : examen des relations entre les facteurs de risque et la présence de CAD.  
 - **Tests statistiques** : réalisation de **tests du Khi-deux (Chi-square tests)** pour déterminer les associations significatives entre la CAD et les facteurs de risque clés.  
 
@@ -239,7 +238,7 @@ L'imputation directe avec une valeur unique (moyenne/médiane) pourrait biaiser 
 - Cela permet d'assurer un remplissage réaliste des valeurs manquantes, en préservant la distribution initiale de l'âge pour chaque classe.
 
 #### Binarisation de la colonne GENDER : #### 
-- GENDER était initialement une variable catégorielle ("M" / "F").
+- `GENDER` était initialement une variable catégorielle ("M" / "F").
 - Elle a été convertie en valeurs binaires : 0 pour Femme, 1 pour Homme afin d'être utilisée comme une caractéristique numérique.
 
 **2. Division Train/Test & Mise à l'échelle**
@@ -249,46 +248,50 @@ Le jeu de données a été prétraité avant la division afin d'assurer des tran
 - Les valeurs manquantes dans ```AGE``` ont été imputées avant la division pour maintenir une distribution d'âge homogène dans les ensembles d'entraînement et de test.
 - Une division stratifiée a été appliquée pour préserver les proportions CAD vs non-CAD dans les deux ensembles.
 - La mise à l'échelle a été appliquée uniquement à ```AGE``` après la division, en utilisant **StandardScaler** sur l'ensemble d'entraînement afin d'éviter les fuites de données.
-Les variables binaires catégoriques (ex : GENDER) n'ont pas nécessité de mise à l'échelle.
+Les variables binaires catégoriques (ex : `GENDER`) n'ont pas nécessité de mise à l'échelle.
 
 **3. Optimisation des hyperparamètres avec RandomizedSearchCV**
+
 Chaque modèle subit un ajustement des hyperparamètres pour trouver les meilleures configurations.
 
 - **RandomizedSearchCV** explore efficacement l'espace des hyperparamètres en sélectionnant des combinaisons aléatoires plutôt qu'une recherche exhaustive en grille.
-- La métrique de scoring utilisée est **AUC-ROC**, idéale pour les problèmes de classification déséquilibrés.
-
+- La métrique de scoring utilisée est **AUC-ROC** qui permet donc d’ajuster le seuil de décision en fonction des priorités cliniques. Par exemple :
+  - Si l’on privilégie la sensibilité (rappel), on favorise la détection des patients malades au risque d’avoir plus de faux positifs.
+  - Si l’on privilégie la spécificité, on réduit les faux positifs mais au risque de ne pas identifier certains patients réellement malades.
+- Dans cette étude, nous avons opté pour un compromis entre sensibilité et spécificité, assurant un bon équilibre global du modèle. Cependant, au vu du contexte médical, il aurait été intéressant de privilégier la sensibilité (recall) pour minimiser les faux négatifs, c'est-à-dire éviter de passer à côté de patients atteints. Cela aurait toutefois augmenté le nombre de faux positifs, entraînant une baisse de la précision, mais garantissant qu’un minimum patient à risque ne soit ignoré.
+  
 **4. Entraînement et évaluation des modèles**
 
 Chaque modèle a été entraîné sur le jeu de données prétraité et évalué selon plusieurs métriques de performance pour mesurer leur pouvoir prédictif. Les critères d'évaluation incluent :
 
-- **Précision (Accuracy)** : Mesure la justesse globale, mais peut être trompeuse en cas de jeu de données déséquilibré.
+- **Précision (Accuracy)** : Mesure la proportion de prédictions (positives ou négatives) correctes sur l’ensemble des données.
 - **Précision & Rappel (Precision & Recall)** :
-  - La précision (« Precision ») évalue le nombre de cas CAD prédits correctement.
+  - La précision (« Precision ») évalue le nombre de cas CAD prédits correctement. Elle indique donc à quel point les prédictions positives du modèle sont fiables.
   - Le rappel (« Recall ») mesure la capacité du modèle à identifier les vrais cas CAD.
-- **Score F1** : Moyenne harmonique de la précision et du rappel, fournissant une mesure équilibrée des performances du modèle.
+- **Score F1** : Moyenne harmonique de la précision et du rappel, fournissant une mesure équilibrée des performances du modèle. A nouveau, au vu du contexte clinique il aurait été interessant d'utiliser F2-score qui privilégie davantage le rappel (éviter les faux négatifs).
 - **AUC-ROC** (Aire sous la courbe - Receiver Operating Characteristic) : 
-  - Évalue la capacité du modèle à distinguer les cas CAD et non-CAD.
+  - Évalue la capacité du modèle à distinguer les cas CAD et non-CAD, en équilibrant spécificité et sensibilité.
 - **Matrice de confusion** :
-  - Fournit des informations sur les vrais positifs, vrais négatifs, faux positifs et faux négatifs, ce qui est crucial pour les prédictions médicales.
+  - Fournit des informations sur les vrais positifs, vrais négatifs, faux positifs et faux négatifs.
 
 ### Résultat de la Prédiction :
 
-Les trois modèles - Arbre de Décision, Forêt Aléatoire et Gradient Boosting - affichent des performances similaires sur toutes les métriques d'évaluation. Cependant, ces différences peuvent aider à guider la sélection finale du modèle.
+Les trois modèles - Arbre de Décision, Forêt Aléatoire et Gradient Boosting - affichent des performances assez similaires sur toutes les métriques d'évaluation. Cependant, l'étude de ces différences peut aider à guider la sélection finale du modèle.
 
-1. **Gradient Boosting** : Meilleur Modèle Global
-- AUC-ROC le plus élevé (0.8219) → Meilleur pour distinguer les cas de CAD (maladie coronarienne) des non-CAD sur différents seuils de probabilité.
-- Précision et Rappel équilibrés (0.73 / 0.75) → Identifie efficacement les patients atteints de CAD tout en limitant les faux positifs.
-- Contribution des caractéristiques plus robuste → Comparé aux arbres de décision, il ajuste progressivement l'importance des caractéristiques, réduisant ainsi le biais d'un seul prédicteur.
+1. **Gradient Boosting** : 
+- AUC-ROC le plus élevé (0.8219) : Meilleur pour distinguer les cas de CAD (maladie coronarienne) des non-CAD sur différents seuils de probabilité.
+- Précision et Rappel équilibrés (0.73 / 0.75) : Identifie efficacement les patients atteints de CAD tout en limitant les faux positifs.
+- Contribution des caractéristiques plus robuste : Comparé aux arbres de décision, il ajuste progressivement l'importance des caractéristiques, réduisant ainsi le biais d'un seul prédicteur.
 
-2. **Forêt Aléatoire :** Fort Rappel & Répartition Plus Équilibrée des Caractéristiques
-- Rappel plus élevé (0.77 pour les patients CAD, classe 1) → Capture plus de vrais cas de CAD que les Arbres de Décision ou le Gradient Boosting.
-- AUC-ROC (0.8198) proche du Gradient Boosting → Légèrement inférieur, mais reste un modèle solide.
+2. **Forêt Aléatoire :** 
+- Rappel plus élevé (0.77 pour les patients CAD, classe 1) : Capture plus de vrais cas de CAD que les Arbres de Décision ou le Gradient Boosting.
+- AUC-ROC (0.8198) proche du Gradient Boosting : Légèrement inférieur, mais reste un modèle solide.
 - Écart plus faible entre la précision d'entraînement (74.83%) et celle du test (74.12%), suggérant une bonne généralisation.
-- Meilleure distribution de l'importance des caractéristiques → Ne dépend pas excessivement d'une seule variable comme les Arbres de Décision.
+- Meilleure distribution de l'importance des caractéristiques : Ne dépend pas excessivement d'une seule variable comme les Arbres de Décision.
 
-**3. Arbre de Décision :** Plus Simple mais Moins Fiable
-- Précision compétitive (73.2%) → Bien qu'étant le modèle le plus simple, il ne performe que légèrement moins bien que les autres.
-- AUC-ROC plus faible (0.8108) → Légèrement moins efficace pour différencier les patients CAD et non-CAD.
+**3. Arbre de Décision :** 
+- Précision compétitive (73.2%) : Bien qu'étant le modèle le plus simple, il ne performe que légèrement moins bien que les autres.
+- AUC-ROC plus faible (0.8108) : Légèrement moins efficace pour différencier les patients CAD et non-CAD.
 - Importance des caractéristiques biaisée → Dépend excessivement de certaines caractéristiques (ex. : l'hypertension domine la contribution des caractéristiques).
 - Plus grand écart entre la précision d'entraînement (76.11%) et celle du test (73.72%), suggérant un léger surapprentissage.
 
@@ -334,7 +337,7 @@ Les facteurs les plus influents dans la prédiction de la coronaropathie (CAD) i
 Ces résultats sont en accord avec les analyses exploratoires initiales, confirmant que les patients souffrant d'hypertension, d'infarctus du myocarde et d'un âge avancé présentent un risque plus élevé de CAD.
 
 ### Conclusion :
-- Le Gradient Boosting offre les meilleures performances et est utilisé pour les résultats finaux.
+- Le Gradient Boosting offre les meilleures performances, avec un bon équilibre entre précision, rappel et performance globale.
 - L'hypertension et l'infarctus du myocarde sont des prédicteurs cliniques clés de la CAD.
 - Les améliorations futures pourraient inclure :
   - La collecte de davantage de données pour réduire les valeurs manquantes (âge, antécédents familiaux, etc.).
