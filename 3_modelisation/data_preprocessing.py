@@ -18,12 +18,10 @@ def load_data() -> tuple[pd.DataFrame, pd.DataFrame]:
     return structured_notes, patients
 
 
-# Load datasets
 df, df_patients = load_data()
 
 # ------------------------ Data Preprocessing ------------------------
 
-# Normalize column names
 df.columns = df.columns.str.strip().str.upper()
 df_patients.columns = df_patients.columns.str.strip().str.upper()
 
@@ -124,19 +122,15 @@ def merge_patient_info(df_grouped: pd.DataFrame, df_patients: pd.DataFrame) -> p
     """
     df_merged = df_grouped.merge(df_patients[["SUBJECT_ID", "GENDER", "DOB", "DOD_HOSP"]], on="SUBJECT_ID", how="left")
 
-    # Convert dates to datetime format
     df_merged["DOB"] = pd.to_datetime(df_merged["DOB"], errors="coerce")
     df_merged["DOD_HOSP"] = pd.to_datetime(df_merged["DOD_HOSP"], errors="coerce")
 
-    # Calculate age based on hospitalization date
     df_merged["AGE"] = df_merged.apply(
         lambda row: (row["DOD_HOSP"].year - row["DOB"].year) if pd.notnull(row["DOD_HOSP"]) else None, axis=1
     )
 
-    # Remove unrealistic ages (> 110 years)
     df_merged.loc[df_merged["AGE"] > 110, "AGE"] = None
 
-    # Drop unnecessary columns
     df_merged = df_merged.drop(columns=["DOB", "DOD_HOSP"])
 
     return df_merged
@@ -161,7 +155,6 @@ def balance_dataset(df: pd.DataFrame, random_state: int = 42) -> pd.DataFrame:
     df_cad = df[df["CAD_PRESENT"] == 1]
     df_non_cad = df[df["CAD_PRESENT"] == 0].sample(n=len(df_cad), random_state=random_state)
 
-    # Concatenate both groups and sort by SUBJECT_ID
     df_balanced = pd.concat([df_cad, df_non_cad]).sort_values(by="SUBJECT_ID").reset_index(drop=True)
 
     return df_balanced

@@ -85,7 +85,6 @@ def tune_model(model, param_grid, X_train, y_train, n_iter=10, cv=3):
     return grid_search.best_estimator_, grid_search.best_params_
 
 
-# Define hyperparameter grids
 param_tree = {"max_depth": [3, 5, 10], "min_samples_split": [2, 5, 10], "min_samples_leaf": [1, 3, 5]}
 param_rf = {
     "n_estimators": [100, 200],
@@ -101,7 +100,6 @@ param_gb = {
     "min_samples_leaf": [1, 3],
 }
 
-# Perform hyperparameter tuning
 best_tree, best_tree_params = tune_model(DecisionTreeClassifier(random_state=42), param_tree, X_train, y_train)
 best_rf, best_rf_params = tune_model(RandomForestClassifier(random_state=42), param_rf, X_train, y_train)
 best_gb, best_gb_params = tune_model(GradientBoostingClassifier(random_state=42), param_gb, X_train, y_train)
@@ -118,7 +116,6 @@ def train_and_evaluate(model, X_train, X_test, y_train, y_test, model_name: str)
     print(f"Accuracy: {accuracy_score(y_test, y_pred):.4f}")
     print(f"AUC-ROC: {roc_auc_score(y_test, y_prob):.4f}")
 
-    # Matrice de confusion
     cm = confusion_matrix(y_test, y_pred)
     sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
     plt.title(f"Matrice de confusion - {model_name}")
@@ -126,7 +123,6 @@ def train_and_evaluate(model, X_train, X_test, y_train, y_test, model_name: str)
     plt.ylabel("Réel")
     plt.show()
 
-    # Courbe ROC
     fpr, tpr, _ = roc_curve(y_test, y_prob)
     plt.plot(fpr, tpr, label=f"{model_name} (AUC = {roc_auc_score(y_test, y_prob):.4f}")
     plt.plot([0, 1], [0, 1], linestyle="--")
@@ -137,7 +133,6 @@ def train_and_evaluate(model, X_train, X_test, y_train, y_test, model_name: str)
     plt.show()
 
 
-# Évaluer les modèles
 train_and_evaluate(best_tree, X_train, X_test, y_train, y_test, "Arbre de Décision Optimisé")
 train_and_evaluate(best_rf, X_train, X_test, y_train, y_test, "Random Forest Optimisé")
 train_and_evaluate(best_gb, X_train, X_test, y_train, y_test, "Gradient Boosting Optimisé")
@@ -176,8 +171,6 @@ plot_feature_importance(best_tree, X, "Importance des variables - Arbre de Déci
 plot_feature_importance(best_rf, X, "Importance des variables - Random Forest Optimisé")
 plot_feature_importance(best_gb, X, "Importance des variables - Gradient Boosting Optimisé")
 
-# Affichage de l'accuracy sur train et test
-
 
 def display_accuracy(model, X_train, X_test, y_train, y_test, model_name: str):
     train_accuracy = accuracy_score(y_train, model.predict(X_train))
@@ -194,7 +187,6 @@ def display_accuracy(model, X_train, X_test, y_train, y_test, model_name: str):
     plt.show()
 
 
-# Affichage de l'accuracy pour les modèles optimisés
 display_accuracy(best_tree, X_train, X_test, y_train, y_test, "Arbre de Décision Optimisé")
 display_accuracy(best_rf, X_train, X_test, y_train, y_test, "Random Forest Optimisé")
 display_accuracy(best_gb, X_train, X_test, y_train, y_test, "Gradient Boosting Optimisé")
