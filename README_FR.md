@@ -50,7 +50,7 @@ Pour respecter les **réglementations de partage des données MIMIC**, ce dépô
 │   ├── matrix_correlation.png           # Carte de corrélation
 ├── README.md                            # Documentation du projet
 ├── requirements.txt                     # Dépendances Python
-
+```
 ## Configuration & Installation
 
 ### Prérequis
@@ -71,7 +71,7 @@ Pour respecter les **réglementations de partage des données MIMIC**, ce dépô
    - Étant donné que l'ensemble de données MIMIC III est très volumineux, la structuration est effectuée uniquement sur une partie de l'ensemble initial.
    - Comme le fichier réel ```NOTEEVENTS.csv``` n'est pas inclus dans ce dépôt en raison des restrictions d'accès aux données MIMIC III, un jeu de données de démonstration a été généré à l'aide de ```1_data_structuration/1_generate_demo_notes.py```. Ce jeu de données reproduit la structure et les caractéristiques des données originales à des fins d'illustration et de test.
 
-   - ** ⚠️ Remarque Importante : **
+   - **⚠️ Remarque Importante**
    Vous pouvez tester entièrement les scripts de structuration et de prétraitement à l'aide de ces fichiers de démonstration, sans nécessiter d'accès au jeu de données restreint.
 
 Si vous souhaitez exécuter la structuration sur les données réelles de MIMIC III, vous devez d'abord demander l'accès via PhysioNet en suivant ces étapes :
@@ -233,7 +233,7 @@ Pour prédire la présence d'une maladie coronarienne (CAD) en fonction des cara
 **1. Prétraitement :**
 
 #### Gestion des valeurs manquantes dans l'AGE ####
-- Un nombre significatif de valeurs AGE était manquant (75-80%), en particulier chez les patients non-CAD.
+- Un nombre significatif de valeurs ```AGE``` était manquant (75-80%), en particulier chez les patients non-CAD.
 L'imputation directe avec une valeur unique (moyenne/médiane) pourrait biaiser le jeu de données, car les patients CAD et non-CAD ont des distributions d'âge différentes.
 - La solution adoptée a consisté à calculer les pourcentages de distribution de l'âge pour les patients CAD et non-CAD par tranches de 10 ans. Les valeurs manquantes ont été attribuées proportionnellement à la distribution d'âge existante.
 - Cela permet d'assurer un remplissage réaliste des valeurs manquantes, en préservant la distribution initiale de l'âge pour chaque classe.
@@ -246,9 +246,9 @@ L'imputation directe avec une valeur unique (moyenne/médiane) pourrait biaiser 
 
 Le jeu de données a été prétraité avant la division afin d'assurer des transformations cohérentes et d'éviter les fuites de données.
 
-- Les valeurs manquantes dans AGE ont été imputées avant la division pour maintenir une distribution d'âge homogène dans les ensembles d'entraînement et de test.
+- Les valeurs manquantes dans ```AGE``` ont été imputées avant la division pour maintenir une distribution d'âge homogène dans les ensembles d'entraînement et de test.
 - Une division stratifiée a été appliquée pour préserver les proportions CAD vs non-CAD dans les deux ensembles.
-- La mise à l'échelle a été appliquée uniquement à AGE après la division, en utilisant **StandardScaler** sur l'ensemble d'entraînement afin d'éviter les fuites de données.
+- La mise à l'échelle a été appliquée uniquement à ```AGE``` après la division, en utilisant **StandardScaler** sur l'ensemble d'entraînement afin d'éviter les fuites de données.
 Les variables binaires catégoriques (ex : GENDER) n'ont pas nécessité de mise à l'échelle.
 
 **3. Optimisation des hyperparamètres avec RandomizedSearchCV**
@@ -305,7 +305,7 @@ La matrice de confusion pour le Gradient Boosting Classifier montre :
 - 640 faux négatifs (cas CAD manqués).
 - 647 faux positifs (classés à tort comme CAD).
 
-Cela suggère que le modèle détecte légèrement mieux les cas de CAD qu’il ne les manque (ce qui est préférable en contexte clinique), mais qu’il reste une marge d’amélioration.
+Cela suggère que le modèle est légèrement plus efficace pour détecter la maladie coronarienne (faux négatif - 25%) que pour éviter les erreurs de classification des cas non coronariens (faux positif - 27%), ce qui est préférable dans un contexte clinique, mais peut encore être amélioré.
 
 ![Texte alternatif](Images/confusion_matrix.png)
 

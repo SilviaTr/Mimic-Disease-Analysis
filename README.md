@@ -4,6 +4,7 @@
 
 This project focuses on structuring clinical notes from the MIMIC database using the Mistral API to extract patient and family medical history. By converting unstructured text into a structured format, we aim to identify key risk factors and correlations between pathologies. The analysis follows a structured pipeline: data extraction, visualization of medical trends through word clouds and statistical plots, and modeling to explore associations between conditions.
 
+_🇫🇷 A French version of this document is available in the `README_VF.md` file_
 
 ## Dataset
 We utilized the **MIMIC-III database**, specifically the `NOTESEVENTS` table, to extract free-text clinical notes. The extracted data was structured using **Mistral API** to obtain:
@@ -301,12 +302,12 @@ Given these results, Gradient Boosting Classifier will be chosen for presenting 
 
 The confusion matrix for the Gradient Boosting Classifier shows:
 
-- 1,830 true positives (correctly predicted CAD cases).
-- 1,837 true negatives (correctly predicted non-CAD cases).
-- 640 false negatives (missed CAD cases).
-- 647 false positives (incorrectly classified as CAD).
+- 1,852 true positives (correctly predicted CAD cases).
+- 1,802 true negatives (correctly predicted non-CAD cases).
+- 625 false negatives (missed CAD cases).
+- 675 false positives (incorrectly classified as CAD).
 
-This suggests that the model is slightly better at detecting CAD than missing it (which is preferable in clinical context) but still has room for improvement.
+This suggests that the model is slightly better at detecting CAD (false negatif - 25%) than avoiding misclassifications of non-CAD cases (false positif - 27%), which is preferable in a clinical context, but still has room for improvement.
 
  ![Alt text](Images/confusion_matrix.png)
 
