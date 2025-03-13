@@ -303,10 +303,10 @@ Les trois modèles - Arbre de Décision, Forêt Aléatoire et Gradient Boosting 
 
 La matrice de confusion pour le Gradient Boosting Classifier montre :
 
-- 1 830 vrais positifs (cas CAD correctement prédits).
-- 1 837 vrais négatifs (cas non-CAD correctement prédits).
-- 640 faux négatifs (cas CAD manqués).
-- 647 faux positifs (classés à tort comme CAD).
+- 1 852 vrais positifs (cas CAD correctement prédits).
+- 1 803 vrais négatifs (cas non-CAD correctement prédits).
+- 625 faux négatifs (cas CAD manqués).
+- 675 faux positifs (classés à tort comme CAD).
 
 Cela suggère que le modèle est légèrement plus efficace pour détecter la maladie coronarienne (faux négatif - 25%) que pour éviter les erreurs de classification des cas non coronariens (faux positif - 27%), ce qui est préférable dans un contexte clinique, mais peut encore être amélioré.
 
