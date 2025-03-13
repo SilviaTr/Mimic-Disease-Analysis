@@ -20,11 +20,11 @@ To comply with **MIMIC data-sharing regulations**, this repository does **NOT** 
 
 - **No real NOTEEVENTS data is included** instead, a demo dataset is provided, generated using 1_generate_demo_data_notes.py.
 
-- **The PATIENTS.csv table is excluded from this repository**, however, PATIENTS_anonymized.csv is available, where SUBJECT_IDs have been **fully encrypted** to prevent any linkage to MIMIC.
+- **The PATIENTS.csv table is excluded from this repository**, however, `PATIENTS_anonymized.csv` is available, where `SUBJECT_IDs` have been **fully encrypted** to prevent any linkage to MIMIC.
 
-- **The structured notes dataset (structured_notes.csv) has been highly transformed**, containing only the main pathology and medical history extracted via the Mistral API. The SUBJECT_IDs are also **anonymized.**
+- **The structured notes dataset (structured_notes.csv) has been highly transformed**, containing only the main pathology and medical history extracted via the Mistral API. The `SUBJECT_IDs` are also **anonymized.**
 
-- **Files excluded from the repository:** NOTEEVENTS.csv, PATIENTS.csv, NOTEEVENTS_1.csv, NOTEEVENTS_2.csv, and structured_notes.csv (original versions with real IDs and real patient's notes).
+- **Files excluded from the repository:** `NOTEEVENTS.csv`, `PATIENTS.csv`, `NOTEEVENTS_1.csv`, `NOTEEVENTS_2.csv`, and structured_notes.csv (original versions with real IDs and real patient's notes).
 
 ## Project Structure
   ```
@@ -82,13 +82,13 @@ If you wish to run the structuration on the real MIMIC III data, you must first 
 - Create an account on PhysioNet: https://physionet.org/login/
 Complete the required credentialing process, including training on data privacy and security.
 - Request access to the MIMIC-III dataset: https://physionet.org/content/mimiciii/
-- Once approved, download the necessary tables (NOTEEVENTS.csv, PATIENTS.csv, etc.) and place them in the appropriate directory (MIMIC_data/).
+- Once approved, download the necessary tables (NOTEEVENTS.csv, PATIENTS.csv, etc.) and place them in the appropriate directory (MIMIC_data/), make sure you replace the value of `INPUT_CSV`, `OUTPUT_CSV` and `file_csv` by the path your new table.
 
 ##### 1.3 .Extract Data using Mistral API 
   ```bash
   python 1_data_structuration/4_medical_notes_structuring.py
    ```
-   - Processes clinical notes using the Mistral API with multithreading to optimize processing time and handle large volumes of clinical text efficiently.
+   - Processes clinical notes using the Mistral AI API with multithreading to optimize processing time and handle large volumes of clinical text efficiently.
    - Saves the structured output as a CSV file in ```1_data_structuration/data/```, which is later used for analysis and modeling.
 
 **⚠️ Important** : Before running the script, you must replace the API key placeholder in ```1_data_structuration/medical_notes_structuring.py``` with your own key:
@@ -96,7 +96,7 @@ Complete the required credentialing process, including training on data privacy 
   API_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXX"  # Replace with your actual API key
    ```
    You can generate a free API key by signing up on the official Mistral AI platform
-   👉 [Mistral API Platform ](https://mistral.ai/fr/news/la-plateforme)
+   👉 [Mistral API Platform ](https://mistral.ai/fr/news/la-plateforme) and sign up for the _Experiment_ plan.
 
 
 ##### 1.4 .Data Anonymization
@@ -277,18 +277,18 @@ Each model was trained on the processed dataset and evaluated using various perf
 
 All three models Decision Tree, Random Forest, and Gradient Boosting—yield similar performances across all evaluation metrics. However, these differences can help guide the final model selection.
 
-1. **Gradient Boosting**: Best Overall Model
+1. **Gradient Boosting**: 
 - Highest AUC-ROC (0.8219) → Best at distinguishing CAD vs. non-CAD cases across different probability thresholds.
 -  Balanced Precision and Recall (0.73 / 0.75) → Identifies CAD patients effectively while limiting false positives.
 - More Robust Feature Contribution → Compared to Decision Trees, it adjusts the importance of features progressively, reducing bias from any single predictor.
 
-2. **Random Forest:** Strong Recall & More Balanced Feature Contribution
+2. **Random Forest:** 
 - Higher Recall (0.77 for CAD patients, class 1) → Captures more true CAD cases than Decision Trees or Gradient Boosting.
 - AUC-ROC (0.8198) Close to Gradient Boosting → Slightly behind, but still a solid model.
 - Lower gap between train accuracy (74.83%) and test accuracy (74.12%), suggesting good generalization. 
 - Better Distribution of Feature Importance → Does not over-rely on a single variable like Decision Trees.
 
-**3. Decision Tree:** Simpler but Less Reliable
+**3. Decision Tree:** 
 - Competitive Accuracy (73.2%) → Despite being the simplest model, it performs only slightly worse than the others.
 - Lower AUC-ROC (0.8108) → Slightly weaker at differentiating between CAD and non-CAD patients.
 - More Biased Feature Importance → Over-relies on a few features (e.g., Hypertension dominates feature contribution).
